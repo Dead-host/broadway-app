@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "5406017216",
+    "project_id": "boradways",
+    "storage_bucket": "boradways.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:5406017216:android:49cf794b1cbccaffd50f25",
+        "android_client_info": {
+          "package_name": "com.example.broad"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvQvJvsMSbT2rreCrF8gRziTK9XHgXUSM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
