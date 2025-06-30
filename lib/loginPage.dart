@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:broad/homePage.dart';
+import 'package:broad/buyerPart/homePage.dart';
+import 'package:broad/sellerPart/sellerHomePage.dart';
 import 'package:broad/signupPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_toggle_tab/flutter_toggle_tab.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -25,6 +27,13 @@ class _LoginpageState extends State<Loginpage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  List<DataTab> get _listTextTabToggle => [
+  DataTab(title: "Buyer"),
+  DataTab(title:"Seller"),
+  ];
+
+  int _tabTextIndexSelected=0;
+
   Future<User?> loginUser() async {
     try {
       final UserCredential userCredential = await _auth.signInWithEmailAndPassword(
@@ -35,7 +44,12 @@ class _LoginpageState extends State<Loginpage> {
       final User? user = userCredential.user;
 
       if(user != null){
-        Navigator.push(context, MaterialPageRoute(builder: (context)=>Homepage()));
+        if(_tabTextIndexSelected==0){
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>Homepage()));
+        }
+        else{
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>Sellerhomepage()));
+        }
       }
 
       final DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
@@ -111,6 +125,8 @@ class _LoginpageState extends State<Loginpage> {
       child:  Scaffold(
         body: Column(
           children: [
+
+
             Padding(
               padding: EdgeInsets.only(top: 20),
               child: Center(
@@ -131,6 +147,20 @@ class _LoginpageState extends State<Loginpage> {
                 ),
               ),
             ),
+            SizedBox(height: 50,),
+            FlutterToggleTab(
+                width: 90,
+                borderRadius: 30,
+                height: 50,
+                selectedIndex: _tabTextIndexSelected,
+                selectedBackgroundColors: [const Color(0xffBF1E2E)],
+                selectedTextStyle: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+                unSelectedTextStyle: const TextStyle(color: Colors.black87, fontSize: 14),
+                unSelectedBackgroundColors: [Colors.white],
+                dataTabs: _listTextTabToggle,
+                selectedLabelIndex: (index) => setState(() => _tabTextIndexSelected = index),
+                isScroll: false,
+                ),
             SizedBox(height: 50,),
             Padding(
               padding: const EdgeInsets.only(left: 20.0,right: 20),

@@ -1,12 +1,11 @@
-import 'package:broad/myDrawer.dart';
-import 'package:broad/profilePage.dart';
-import 'package:broad/settingsPage.dart';
+import 'package:broad/buyerPart/myDrawer.dart';
+import 'package:broad/buyerPart/profilePage.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-import 'loginPage.dart';
+import '../loginPage.dart';
 
 
 

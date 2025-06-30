@@ -1,7 +1,6 @@
-import 'package:broad/homePage.dart';
+import 'package:broad/buyerPart/homePage.dart';
 import 'package:broad/loginPage.dart';
-import 'package:broad/profilePage.dart';
-import 'package:broad/settingsPage.dart';
+import 'package:broad/buyerPart/profilePage.dart';
 import 'package:flutter/material.dart';
 
 class Mydrawer extends StatefulWidget {
@@ -58,13 +57,6 @@ class _MydrawerState extends State<Mydrawer> {
             title: Text("Profile",style: TextStyle(fontSize: 20),),
             onTap: (){
               Navigator.push(context, MaterialPageRoute(builder: (context)=>Profilepage()));
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.settings,size: 40,),
-            title: Text("Settings",style: TextStyle(fontSize: 20),),
-            onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>Settingspage()));
             },
           ),
           Spacer(),
