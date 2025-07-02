@@ -1,4 +1,6 @@
+import 'package:broad/buyerPart/homePage.dart';
 import 'package:broad/loginPage.dart';
+import 'package:broad/practice.dart';
 import 'package:broad/signupPage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';

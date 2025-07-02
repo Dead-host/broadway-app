@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:broad/sellerPart/sellerHomePage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
@@ -20,23 +21,36 @@ class _AdditempageState extends State<Additempage> {
 
   String? base64Image;
 
-  Future<void> pickImage(ImageSource source) async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: source, imageQuality: 70);
+
+  Future<void> createItem()async{
+    try{
+      await FirebaseFirestore.instance.collection('product').add({
+        'name':itemName.text,
+        'price':itemPrice.text,
+        'description':itemDescription.text,
+        'image':base64Image,
+      });
+    }catch(e){
+      print("Erroe: $e");
+    }
+  }
+
+  Future<void> pickImage(ImageSource source) async{
+    final picker=ImagePicker();
+    final pickedFile= await picker.pickImage(source: source,imageQuality: 70);
 
     if (pickedFile != null) {
       final compressed = await FlutterImageCompress.compressWithFile(
         pickedFile.path,
         quality: 70,
       );
-
       if (compressed != null) {
         setState(() {
           base64Image = base64Encode(compressed);
         });
+      }
     }
-    }
-    }
+  }
 
 
   @override
@@ -67,7 +81,7 @@ class _AdditempageState extends State<Additempage> {
                     ),
                   ),
                 ),
-              ), // item name
+              ),
               SizedBox(height: 50,),
               Padding(
                 padding: const EdgeInsets.only(left: 20.0,right: 20),
@@ -85,7 +99,7 @@ class _AdditempageState extends State<Additempage> {
                     ),
                   ),
                 ),
-              ), // item price
+              ),
               SizedBox(height: 50,),
               Padding(
                 padding: const EdgeInsets.only(left: 20.0,right: 20),
@@ -103,9 +117,8 @@ class _AdditempageState extends State<Additempage> {
                     ),
                   ),
                 ),
-              ), // item description
+              ),
               SizedBox(height: 50,),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -117,16 +130,15 @@ class _AdditempageState extends State<Additempage> {
                     pickImage(ImageSource.gallery);
                   }, icon: Icon(Icons.photo)),
                 ],
-              ), // camera and photos
-
+              ),
               SizedBox(height: 50,),
-
               ElevatedButton(
                   onPressed: (){
                     Navigator.push(context, MaterialPageRoute(builder: (context)=>Sellerhomepage()));
+                    createItem();
                   },
                   child: Text("Save"),
-              ),// save button
+              ),
 
               if (base64Image != null)
                 Column(
