@@ -26,23 +26,47 @@ class _ProductdetailState extends State<Productdetail> {
       ),
       body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.memory(base64Decode(widget.image!)),
-            SizedBox(height: 50,),
-            Text(widget.name!,style: TextStyle(fontWeight: FontWeight.bold),),
-            SizedBox(height: 50,),
-            Text(widget.price!,style: TextStyle(fontWeight: FontWeight.bold),),
+            Image.memory(base64Decode(widget.image!),height: 300,width: 500,),
             SizedBox(height: 50,),
             Padding(
-              padding: const EdgeInsets.only(bottom: 20.0),
-              child: Text(widget.description!,style: TextStyle(fontWeight: FontWeight.bold),),
+              padding: const EdgeInsets.only(left: 20.0),
+              child: Row(
+                children: [
+                  Text("Name: ",style: TextStyle(fontWeight: FontWeight.bold),),
+                  Text(widget.name!),
+                ],
+              ),
             ),
-            ElevatedButton(
-                onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>Cartpage()));
-                },
-                child: Text("Add to cart"),
+            SizedBox(height: 50,),
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0),
+              child: Row(
+                children: [
+                  Text("Price: ",style: TextStyle(fontWeight: FontWeight.bold),),
+                  Text("Rs ${widget.price!}"),
+                ],
+              ),
+            ),
+            SizedBox(height: 50,),
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0),
+              child: Row(
+                children: [
+                  Text("Description: ",style: TextStyle(fontWeight: FontWeight.bold),),
+                  Text(widget.description!,),
+                ],
+              ),
+            ),
+            SizedBox(height: 100,),
+            Center(
+              child: ElevatedButton(
+                  onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>Cartpage()));
+                  },
+                  child: Text("Add to cart"),
+              ),
             ),
           ],
         ),

@@ -209,7 +209,7 @@ class _HomepageState extends State<Homepage> {
                                           Text(data['name'] ?? "No Name",
                                               style: const TextStyle(
                                                   fontWeight: FontWeight.bold)),
-                                          Text("Price:${data['price'] ?? 'N/A'}"),
+                                          Text("Price: Rs. ${data['price'] ?? 'N/A'}"),
                                           Text(
                                             data['description'],
                                             maxLines: 1,

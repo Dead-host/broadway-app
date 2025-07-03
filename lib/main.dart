@@ -1,3 +1,4 @@
+import 'package:broad/buyerPart/checkoutPage.dart';
 import 'package:broad/buyerPart/homePage.dart';
 import 'package:broad/loginPage.dart';
 import 'package:broad/practice.dart';
