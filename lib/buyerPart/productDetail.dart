@@ -65,7 +65,7 @@ class _ProductdetailState extends State<Productdetail> {
                   onPressed: (){
                     Navigator.push(context, MaterialPageRoute(builder: (context)=>Cartpage()));
                   },
-                  child: Text("Add to cart"),
+                  child: Text("Go to cart"),
               ),
             ),
           ],

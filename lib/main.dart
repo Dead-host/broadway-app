@@ -5,6 +5,7 @@ import 'package:broad/practice.dart';
 import 'package:broad/signupPage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:khalti_flutter/khalti_flutter.dart';
 
 void main()async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,13 +19,26 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: Loginpage(),
+    return KhaltiScope(
+        publicKey: 'test_public_key_5c5fa086bb704a54b1efd924a2acb036',
+        builder: (context,e){
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Flutter Demo',
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            ),
+            home: Loginpage(),
+            navigatorKey: e,
+            supportedLocales: [
+              Locale('en', 'US'),
+              Locale('ne', 'NP'),
+            ],
+            localizationsDelegates: [
+              KhaltiLocalizations.delegate,
+            ],
+          );
+        }
     );
   }
 }

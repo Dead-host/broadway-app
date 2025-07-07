@@ -66,8 +66,18 @@ class _CartpageState extends State<Cartpage> {
     final uid = FirebaseAuth.instance.currentUser!.uid;
     return SafeArea(child: Scaffold(
       appBar: AppBar(
+
         title: Text("Cart page"),
         centerTitle: true,
+        actions: [
+          IconButton(onPressed: (){
+            //delete the items of cart
+          },
+              icon: Icon(Icons.delete)
+          ),
+
+
+        ],
       ),
       body: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance.collection('users').doc(uid).collection('cart').where('isCheckout', isEqualTo: false).snapshots(),
@@ -86,8 +96,8 @@ class _CartpageState extends State<Cartpage> {
                           return Card(
                             child: ListTile(
                               leading: Image.memory(base64Decode(data['image']),height: 50,width: 60,),
-                              title: Text(data['name']),
-                              subtitle: Text("Price: Rs ${data['price']}"),
+                              title: Text(data['name']??""),
+                              subtitle: Text("Price: Rs ${data['price']??""}"),
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
