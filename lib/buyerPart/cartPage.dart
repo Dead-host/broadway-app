@@ -32,6 +32,16 @@ class _CartpageState extends State<Cartpage> {
     return total;
   }
 
+  Future<void> emptyCart()async{
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+
+    final collectionRef=FirebaseFirestore.instance.collection('users').doc(uid).collection('cart');
+    final cartItems = await collectionRef.where('isCheckout',isEqualTo: false).get();
+    for(var doc in cartItems.docs){
+      await doc.reference.delete();
+    }
+  }
+
   Future<void> proceedToCheckout(List<QueryDocumentSnapshot> items, double totalPrice) async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid == null) return;
@@ -74,12 +84,10 @@ class _CartpageState extends State<Cartpage> {
         actions: [
           IconButton(onPressed: (){
             //delete cart item
-           // FirebaseFirestore.instance.collection('users').doc(uid).collection('cart').doc().delete();
+            emptyCart();
           },
               icon: Icon(Icons.delete)
           ),
-
-
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(

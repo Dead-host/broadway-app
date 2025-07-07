@@ -93,9 +93,13 @@ class _CheckoutpageState extends State<Checkoutpage> {
             'long':85.3492267
           },
           'status':'delivered',
-
+          
 
         });
+        for (int i =0;i<widget.selectedItem.length;i++){
+          String itemId = widget.selectedItem[i]['name'];
+          FirebaseFirestore.instance.collection('users').doc(user.uid).collection('cart').doc(itemId).update({'isCheckout':true});
+        }
       }catch(e){
         print(e);
       }
