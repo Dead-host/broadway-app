@@ -1,5 +1,6 @@
 import 'package:broad/buyerPart/homePage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -24,6 +25,11 @@ class _CheckoutpageState extends State<Checkoutpage> {
   double longitude=0.0;
   PaymentMethod? selectedPaymentMethod;
   bool isProcessing=false;
+  String? orderId='';
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
 
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
@@ -58,6 +64,44 @@ class _CheckoutpageState extends State<Checkoutpage> {
     });
   }
 
+
+  Future<void> saveOrderToFirestore() async{
+    orderId=DateTime.now().millisecondsSinceEpoch.toString();
+    final user=_auth.currentUser;
+    if(user!=null){
+      try{
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).collection('orders').doc(orderId).set({
+          'user':user.uid,
+          'orderDate':FieldValue.serverTimestamp(),
+          'orderId':orderId,
+          'items':widget.selectedItem,
+          'subTotal':widget.price,
+          'shippingCost':50,
+          'tax':100,
+          'totalPrice':widget.price+150,
+          'paymentMethod':selectedPaymentMethod.toString()??'unknown',
+          'currentAddress':{
+            'lat':27.6889087,
+            'long':85.3492267
+          },
+          'deliveryAddress':{
+            'lat':latitude,
+            'long':longitude
+          },
+          'officeAddress':{
+            'lat':27.6889087,
+            'long':85.3492267
+          },
+          'status':'delivered',
+
+
+        });
+      }catch(e){
+        print(e);
+      }
+    }
+  }
+
   Future<void> proceedToPayment() async{
     if(selectedPaymentMethod==PaymentMethod.khalti){
       KhaltiScope.of(context).pay(
@@ -78,7 +122,7 @@ class _CheckoutpageState extends State<Checkoutpage> {
 
           try {
             // await sendOrderEmail(widget.selectedItems);
-            //await saveOrderToFirestore();
+            await saveOrderToFirestore();
 
             //await generateAndDownloadPDF();
 
@@ -249,7 +293,12 @@ class _CheckoutpageState extends State<Checkoutpage> {
             SizedBox(height: 50,),
             ElevatedButton(
                 onPressed: (){
-                  proceedToPayment();
+                  if(selectedPaymentMethod==PaymentMethod.khalti){
+                    proceedToPayment();
+                  }
+                  else{
+                    saveOrderToFirestore();
+                  }
                 },
                 child: Text("Check Out")
             ),

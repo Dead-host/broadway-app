@@ -4,6 +4,7 @@ import 'package:broad/buyerPart/checkoutPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 
 class Cartpage extends StatefulWidget {
   const Cartpage({super.key});
@@ -30,6 +31,7 @@ class _CartpageState extends State<Cartpage> {
     }
     return total;
   }
+
   Future<void> proceedToCheckout(List<QueryDocumentSnapshot> items, double totalPrice) async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid == null) return;
@@ -71,7 +73,8 @@ class _CartpageState extends State<Cartpage> {
         centerTitle: true,
         actions: [
           IconButton(onPressed: (){
-            //delete the items of cart
+            //delete cart item
+           // FirebaseFirestore.instance.collection('users').doc(uid).collection('cart').doc().delete();
           },
               icon: Icon(Icons.delete)
           ),

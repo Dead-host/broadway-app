@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:broad/buyerPart/cartPage.dart';
 import 'package:broad/buyerPart/productDetail.dart';
 import 'package:broad/buyerPart/profilePage.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -70,6 +71,9 @@ class _HomepageState extends State<Homepage> {
               "Home page",
             ),
             centerTitle: true,
+            actions: [
+              IconButton(onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context)=>Cartpage()));}, icon: Icon(Icons.shopping_cart))
+            ],
           ),
           drawer: Drawer(
             child: Column(
