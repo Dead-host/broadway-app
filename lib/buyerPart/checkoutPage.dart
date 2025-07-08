@@ -1,10 +1,20 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:broad/buyerPart/homePage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
 import 'package:khalti_flutter/khalti_flutter.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+
+import 'package:pdf/widgets.dart'as pw;
+
 
 enum PaymentMethod{cod,khalti}
 
@@ -142,6 +152,7 @@ class _CheckoutpageState extends State<Checkoutpage> {
                       TextButton(
                         onPressed: () {
                           Navigator.of(context).pop();
+                          generateAndDownloadPDF();
                           Navigator.push(context, MaterialPageRoute(builder: (context)=>Homepage()));
                         },
                         child: const Text('OK'),
@@ -175,6 +186,143 @@ class _CheckoutpageState extends State<Checkoutpage> {
     }
   }
 
+  Future<void> generateAndDownloadPDF() async {
+    final pdf = pw.Document();
+    final formatter = DateFormat('dd-MM-yyyy hh:mm a');
+    final currentDate = formatter.format(DateTime.now());
+
+    pdf.addPage(
+      pw.MultiPage(
+        pageFormat: PdfPageFormat.a4,
+        margin: const pw.EdgeInsets.all(32),
+        build: (pw.Context context) {
+          return [
+            pw.Header(
+              level: 0,
+              child: pw.Text('INVOICE', style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold)),
+            ),
+            pw.SizedBox(height: 20),
+            pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+              children: [
+                pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    pw.Text('Order ID: $orderId'),
+                    pw.Text('Date: $currentDate'),
+                  ],
+                ),
+                pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.end,
+                  children: [
+                    pw.Text('Customer Details:'),
+                    pw.Text('Phone: ${phoneController.text}'),
+                    pw.Text('Email: ${emailController.text}'),
+                    pw.Text('Address: ${locationController.text}'),
+                    pw.Text('Location: $currentAddress'),
+                  ],
+                ),
+              ],
+            ),
+            pw.SizedBox(height: 30),
+            pw.Text('Order Summary', style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
+            pw.SizedBox(height: 10),
+            pw.Table.fromTextArray(
+              headers: ['Product', 'Quantity', 'Unit Price', 'Total'],
+              data: widget.selectedItem.map((item) {
+                int qty = item['qty'] ?? 1;
+                double price = double.tryParse(item['price'].toString()) ?? 0.0;
+                double itemTotal = qty * price;
+                return [
+                  item['name'],
+                  qty.toString(),
+                  'Rs.${price.toStringAsFixed(2)}',
+                  'Rs.${itemTotal.toStringAsFixed(2)}',
+                ];
+              }).toList(),
+              border: null,
+              headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+              headerDecoration: const pw.BoxDecoration(color: PdfColors.grey300),
+              cellHeight: 30,
+              cellAlignments: {
+                0: pw.Alignment.centerLeft,
+                1: pw.Alignment.center,
+                2: pw.Alignment.centerRight,
+                3: pw.Alignment.centerRight,
+              },
+            ),
+            pw.SizedBox(height: 20),
+            pw.Divider(),
+            pw.SizedBox(height: 10),
+            pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+              children: [
+                pw.Text('Subtotal:', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                pw.Text('Rs.${widget.price.toStringAsFixed(2)}'),
+              ],
+            ),
+            pw.SizedBox(height: 5),
+            pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+              children: [
+                pw.Text('Shipping:', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                pw.Text('Rs.50.00'),
+              ],
+            ),
+            pw.SizedBox(height: 5),
+            pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+              children: [
+                pw.Text('Tax:', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                pw.Text('Rs.100.00'),
+              ],
+            ),
+            pw.Divider(),
+            pw.SizedBox(height: 5),
+            pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+              children: [
+                pw.Text('Total:', style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 16)),
+                pw.Text('Rs.${(widget.price + 150).toStringAsFixed(2)}', style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 16)),
+              ],
+            ),
+            pw.SizedBox(height: 30),
+            pw.Text('Payment Information', style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold)),
+            pw.SizedBox(height: 10),
+            pw.Text('Payment Method: ${selectedPaymentMethod?.name.toUpperCase() ?? "N/A"}'),
+            pw.Text('Payment Status: Completed'),
+            pw.SizedBox(height: 30),
+            pw.Center(
+              child: pw.Text('Thank you for your purchase!', style: pw.TextStyle(fontSize: 16)),
+            ),
+            pw.SizedBox(height: 10),
+            pw.Center(
+              child: pw.Text('For any questions, please contact customer support.'),
+            ),
+          ];
+        },
+      ),
+    );
+
+    try {
+      final directory = await getExternalStorageDirectory() ?? await getApplicationDocumentsDirectory();
+      final path = '${directory.path}/Invoice_$orderId.pdf';
+      final file = File(path);
+      await file.writeAsBytes(await pdf.save());
+
+      print('Invoice saved to $path');
+      OpenFile.open(path);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Invoice saved to $path')),
+      );
+    } catch (e) {
+      print('Error generating PDF: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to generate invoice. Please try again.')),
+      );
+    }
+  }
 
 
 
@@ -302,6 +450,7 @@ class _CheckoutpageState extends State<Checkoutpage> {
                   }
                   else{
                     saveOrderToFirestore();
+                    generateAndDownloadPDF();
                   }
                 },
                 child: Text("Check Out")

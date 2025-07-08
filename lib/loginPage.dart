@@ -7,9 +7,11 @@ import 'package:broad/signupPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_toggle_tab/flutter_toggle_tab.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -24,16 +26,54 @@ class _LoginpageState extends State<Loginpage> {
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  int _tabTextIndexSelected=0;
   bool see=true;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final LocalAuthentication auth = LocalAuthentication();
+
+  Future<void> _authenticateWithBiometrics() async {
+    try {
+      bool didAuthenticate = await auth.authenticate(
+        localizedReason: 'Please authenticate to login',
+        options: const AuthenticationOptions(
+          biometricOnly: false,
+          stickyAuth: true,
+        ),
+      );
+      if(didAuthenticate){
+        if(_tabTextIndexSelected==0){
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>Homepage()));
+        }
+        else{
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>Sellerhomepage()));
+        }
+      }else{
+
+      }
+    } on PlatformException catch (e) {
+      if (e.code == 'LockedOut') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              "Too many failed attempts. Please try again in 30 seconds.",
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
+        debugPrint(e.toString());
+      }
+    }
+
+  }
 
   List<DataTab> get _listTextTabToggle => [
   DataTab(title: "Buyer"),
   DataTab(title:"Seller"),
   ];
 
-  int _tabTextIndexSelected=0;
+
 
   final GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: [
@@ -261,15 +301,21 @@ class _LoginpageState extends State<Loginpage> {
                 ),
               ),
               SizedBox(height: 50,),
-              ElevatedButton(
-                  onPressed: ()async{
-                    loginUser();
-                    //SharedPreferences prefs = await SharedPreferences.getInstance();
-                    //loginStat();
-                    //getDataInfo();
-                    //Navigator.push(context, MaterialPageRoute(builder: (context)=>Homepage()));
-                  },
-                  child: Text("Login")),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                      onPressed: ()async{
+                        loginUser();
+                        //SharedPreferences prefs = await SharedPreferences.getInstance();
+                        //loginStat();
+                        //getDataInfo();
+                        //Navigator.push(context, MaterialPageRoute(builder: (context)=>Homepage()));
+                      },
+                      child: Text("Login")),
+                  IconButton(onPressed: (){_authenticateWithBiometrics();}, icon: Icon(Icons.fingerprint)),
+                ],
+              ),
               SizedBox(height: 50,),
               Center(
                   child: OutlinedButton.icon(
