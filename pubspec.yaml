@@ -45,6 +45,7 @@ dependencies:
   path_provider: ^2.1.1
   khalti_flutter:
   local_auth: ^2.3.0
+  flutter_spinkit: ^5.2.1
   intl: ^0.18.1
   http:
   flutter:

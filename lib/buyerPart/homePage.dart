@@ -7,6 +7,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -26,6 +27,7 @@ class _HomepageState extends State<Homepage> {
 
   String? name;
 
+
   final List<String> images =[
     'assets/keyboard.jpg',
     'assets/mouse.png',
@@ -42,6 +44,8 @@ class _HomepageState extends State<Homepage> {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+
 
   void addToCart(Map<String,dynamic> product) async{
     final user = _auth.currentUser;
@@ -132,114 +136,112 @@ class _HomepageState extends State<Homepage> {
               ],
             ),
           ),
-          body: Padding(
-            padding: const EdgeInsets.only(top: 20),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  CarouselSlider(
-                      options: CarouselOptions(
-                        height: 200,
-                        enlargeCenterPage: true,
-                        autoPlay: true,
-                        aspectRatio: 89/9,
-                        viewportFraction: 0.8,
-                      ),
-                    items: images.map((imageUrl){
-                      return Container(
-                        margin: EdgeInsets.symmetric(horizontal: 5),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          image: DecorationImage(
-                              image: AssetImage(imageUrl),
-                            fit: BoxFit.cover
-                          ),
-                        ),
-                      );
-                    }).toList(),
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                CarouselSlider(
+                  options: CarouselOptions(
+                    height: 200,
+                    enlargeCenterPage: true,
+                    autoPlay: true,
+                    aspectRatio: 89/9,
+                    viewportFraction: 0.8,
                   ),
-                  Container(
-                    height: 600,
-                    width: 400,
-                    child: StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance.collection('product').snapshots(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          return const Center(child: Text('Something went wrong'));
-                        }
-              
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const Center(child: CircularProgressIndicator());
-                        }
-              
-                        final docs = snapshot.data!.docs;
-              
-                        return GridView.builder(
-                          padding: const EdgeInsets.all(10),
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            mainAxisSpacing: 10,
-                            crossAxisSpacing: 10,
-                            childAspectRatio: 0.75,
-                          ),
-                          itemCount: docs.length,
-                          itemBuilder: (context, index) {
-                            final data = docs[index].data() as Map<String, dynamic>;
-              
-                            return GestureDetector(
-                              onTap: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=>Productdetail(data['name'],data['price'],data['description'],data['image'])));
-                              },
-                              child: Card(
-                                elevation: 4,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12)),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                                  children: [
-                                    Expanded(
-                                      child: data['image'] != null && data['image'] != ""
-                                          ? Image.memory(
-                                        base64Decode(data['image']),
-                                        fit: BoxFit.cover,
-                                      )
-                                          : const Icon(Icons.image, size: 80),
+                  items: images.map((imageUrl){
+                    return Container(
+                      margin: EdgeInsets.symmetric(horizontal: 5),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        image: DecorationImage(
+                            image: AssetImage(imageUrl),
+                            fit: BoxFit.cover
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+                SizedBox(height: 10,),
+                Container(
+                  height: 600,
+                  width: 400,
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance.collection('product').snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return const Center(child: Text('Something went wrong'));
+                      }
+
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      final docs = snapshot.data!.docs;
+
+                      return GridView.builder(
+                        padding: const EdgeInsets.all(10),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 10,
+                          crossAxisSpacing: 10,
+                          childAspectRatio: 0.75,
+                        ),
+                        itemCount: docs.length,
+                        itemBuilder: (context, index) {
+                          final data = docs[index].data() as Map<String, dynamic>;
+
+                          return GestureDetector(
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=>Productdetail(data['name'],data['price'],data['description'],data['image'])));
+                            },
+                            child: Card(
+                              elevation: 4,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Expanded(
+                                    child: data['image'] != null && data['image'] != ""
+                                        ? Image.memory(
+                                      base64Decode(data['image']),
+                                      fit: BoxFit.cover,
+                                    )
+                                        : const Icon(Icons.image, size: 80),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(data['name'] ?? "No Name",
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold)),
+                                        Text("Price: Rs. ${data['price'] ?? 'N/A'}"),
+                                        Text(
+                                          data['description'],
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(data['name'] ?? "No Name",
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.bold)),
-                                          Text("Price: Rs. ${data['price'] ?? 'N/A'}"),
-                                          Text(
-                                            data['description'],
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    OutlinedButton(
-                                        onPressed: (){
-                                          addToCart(data);
+                                  ),
+                                  OutlinedButton(
+                                      onPressed: (){
+                                        addToCart(data);
 
                                       },
-                                        child: Text("Add to Cart")),
-              
-                                  ],
-                                ),
+                                      child: Text("Add to Cart")),
+
+                                ],
                               ),
-                            );
-                          },
-                        );
-                      },
-                    ),
+                            ),
+                          );
+                        },
+                      );
+                    },
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ));

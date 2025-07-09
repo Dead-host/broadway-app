@@ -8,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_toggle_tab/flutter_toggle_tab.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -28,6 +29,7 @@ class _LoginpageState extends State<Loginpage> {
   TextEditingController passwordController = TextEditingController();
   int _tabTextIndexSelected=0;
   bool see=true;
+  bool isLoading=false;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final LocalAuthentication auth = LocalAuthentication();
@@ -43,9 +45,12 @@ class _LoginpageState extends State<Loginpage> {
       );
       if(didAuthenticate){
         if(_tabTextIndexSelected==0){
+
+
           Navigator.push(context, MaterialPageRoute(builder: (context)=>Homepage()));
         }
         else{
+          
           Navigator.push(context, MaterialPageRoute(builder: (context)=>Sellerhomepage()));
         }
       }else{
@@ -117,9 +122,11 @@ class _LoginpageState extends State<Loginpage> {
     }
     }
 
+    Future<User?> loginUser() async {
 
-
-      Future<User?> loginUser() async {
+    setState(() {
+      isLoading=true;
+    });
     try {
       final UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: emailController.text,
@@ -129,10 +136,19 @@ class _LoginpageState extends State<Loginpage> {
       final User? user = userCredential.user;
 
       if(user != null){
+
         if(_tabTextIndexSelected==0){
+          setState(() {
+            isLoading=false;
+          });
+
           Navigator.push(context, MaterialPageRoute(builder: (context)=>Homepage()));
         }
         else{
+          setState(() {
+            isLoading=false;
+          });
+
           Navigator.push(context, MaterialPageRoute(builder: (context)=>Sellerhomepage()));
         }
       }
@@ -151,7 +167,9 @@ class _LoginpageState extends State<Loginpage> {
       print("StackTrace: $stacktrace");
       Fluttertoast.showToast(msg: "Invalid username or password");
       return null;
+
     }
+
     } // firebase auth login
 
   Future loginStat() async{
@@ -208,7 +226,8 @@ class _LoginpageState extends State<Loginpage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child:  Scaffold(
-        body: SingleChildScrollView(
+        body: isLoading?SpinKitSpinningLines(color: Colors.purple,size: 100,):
+        SingleChildScrollView(
           child: Column(
             children: [
               Padding(
