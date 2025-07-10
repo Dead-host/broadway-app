@@ -68,6 +68,8 @@ class _HomepageState extends State<Homepage> {
     super.initState();
     getData();
   }
+
+
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
@@ -140,26 +142,6 @@ class _HomepageState extends State<Homepage> {
           body: SingleChildScrollView(
             child: Column(
               children: [
-                //search bar
-                Padding(
-                  padding: const EdgeInsets.only(left: 20,right: 20,top: 20,bottom: 20),
-                  child: TextFormField(
-                    controller: searchController,
-                    decoration: InputDecoration(
-                      suffixIcon: Icon(Icons.search),
-                      hintText: "Search Item",
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20),
-                        borderSide: BorderSide(color: Colors.grey),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.green),
-                        borderRadius: BorderRadius.circular(20),
-                      )
-                    ),
-
-                  ),
-                ),
                 CarouselSlider(
                   options: CarouselOptions(
                     height: 200,
@@ -180,6 +162,26 @@ class _HomepageState extends State<Homepage> {
                       ),
                     );
                   }).toList(),
+                ),
+                //search bar
+                Padding(
+                  padding: const EdgeInsets.only(left: 20,right: 20,top: 20,bottom: 10),
+                  child: TextFormField(
+                    controller: searchController,
+                    decoration: InputDecoration(
+                        suffixIcon: Icon(Icons.search),
+                        hintText: "Search Item",
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.green),
+                          borderRadius: BorderRadius.circular(20),
+                        )
+                    ),
+
+                  ),
                 ),
                 SizedBox(height: 10,),
                 Container(

@@ -1,6 +1,11 @@
+
+
+import 'dart:developer';
+
 import 'package:broad/buyerPart/homePage.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../loginPage.dart';
 
@@ -18,7 +23,24 @@ class _ProfilepageState extends State<Profilepage> {
   TextEditingController confirmPasswordController = TextEditingController();
   bool see=false;
   bool seePass=false;
-  bool light = true;
+  bool? light;
+  bool isFingerPrintEnable=true;
+
+
+  void getData()async{
+    SharedPreferences _pref = await SharedPreferences.getInstance();
+    setState(() {
+      light=_pref.getBool('isFingerEnable')??false;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +110,11 @@ class _ProfilepageState extends State<Profilepage> {
           body: SingleChildScrollView(
             child: Column(
               children: [
+
+                Container(
+                  height: 200,
+                ),
+
                 Padding(
                   padding: const EdgeInsets.only(left: 20,right: 20,top: 20),
                   child: TextFormField(
@@ -172,12 +199,25 @@ class _ProfilepageState extends State<Profilepage> {
                         ],
                       ),
                       Switch(
-                          value: light,
+                          value: light!,
                           activeColor: Colors.greenAccent,
-                          onChanged: (bool value){
+                          onChanged: (bool value) async {
+
+                            SharedPreferences pref = await SharedPreferences.getInstance();
+
+                            pref.setBool('isFingerEnable', value);
+                            pref.setBool('isFingerEnable', value);
+
                             setState(() {
                               light=value;
                             });
+
+                            if(value==true){
+
+                            }
+                            else{
+
+                            }
                           }
                       ),
                     ],

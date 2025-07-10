@@ -44,15 +44,7 @@ class _LoginpageState extends State<Loginpage> {
         ),
       );
       if(didAuthenticate){
-        if(_tabTextIndexSelected==0){
-
-
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>Homepage()));
-        }
-        else{
-          
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>Sellerhomepage()));
-        }
+        loginUserWithBiometric();
       }else{
 
       }
@@ -88,6 +80,17 @@ class _LoginpageState extends State<Loginpage> {
     signInOption: SignInOption.standard,
   );
 
+  bool?  isFingerPrintEnable ;
+
+
+  void getDetail()async{
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    setState(() {
+      isFingerPrintEnable = preferences.getBool('isFingerEnable')??false;
+    });
+
+  }
+
   Future<UserCredential?> signInWithGoogle() async {
     try {
       GoogleSignInAccount? googleUser = _googleSignIn.currentUser;
@@ -122,7 +125,9 @@ class _LoginpageState extends State<Loginpage> {
     }
     }
 
-    Future<User?> loginUser() async {
+  Future<User?> loginUser() async {
+
+    SharedPreferences _pref = await SharedPreferences.getInstance();
 
     setState(() {
       isLoading=true;
@@ -132,6 +137,9 @@ class _LoginpageState extends State<Loginpage> {
         email: emailController.text,
         password: passwordController.text,
       );
+
+      _pref.setString('email',emailController.text,);
+      _pref.setString( 'password',passwordController.text,);
 
       final User? user = userCredential.user;
 
@@ -171,6 +179,60 @@ class _LoginpageState extends State<Loginpage> {
     }
 
     } // firebase auth login
+
+  Future<User?> loginUserWithBiometric() async {
+
+    SharedPreferences _pref = await SharedPreferences.getInstance();
+
+    setState(() {
+      isLoading=true;
+    });
+    try {
+      final UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: _pref.getString('email')??"",
+        password: _pref.getString('password')??"",
+      );
+
+
+
+      final User? user = userCredential.user;
+
+      if(user != null){
+
+        if(_tabTextIndexSelected==0){
+          setState(() {
+            isLoading=false;
+          });
+
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>Homepage()));
+        }
+        else{
+          setState(() {
+            isLoading=false;
+          });
+
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>Sellerhomepage()));
+        }
+      }
+
+      final DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection("users")
+          .doc(user!.uid)
+          .get();
+
+      final userData = userSnapshot.data() as Map<String, dynamic>?;
+      log("user email:"+userData.toString());
+      print("Login successful: ${user?.email}");
+      return user;
+    } catch (e, stacktrace) {
+      print("Login Error: $e");
+      print("StackTrace: $stacktrace");
+      Fluttertoast.showToast(msg: "Invalid username or password");
+      return null;
+
+    }
+
+    }
 
   Future loginStat() async{
     SharedPreferences prefs= await SharedPreferences.getInstance();
@@ -221,7 +283,15 @@ class _LoginpageState extends State<Loginpage> {
     }
     return response;
     
-  } //api get
+  }//api get
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getDetail();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -332,7 +402,13 @@ class _LoginpageState extends State<Loginpage> {
                         //Navigator.push(context, MaterialPageRoute(builder: (context)=>Homepage()));
                       },
                       child: Text("Login")),
-                  IconButton(onPressed: (){_authenticateWithBiometrics();}, icon: Icon(Icons.fingerprint)),
+                  Visibility(
+                    visible: isFingerPrintEnable!,
+                      child: IconButton(
+                          onPressed: (){_authenticateWithBiometrics();},
+                          icon: Icon(Icons.fingerprint)
+                      ),
+                  ),
                 ],
               ),
               SizedBox(height: 50,),
