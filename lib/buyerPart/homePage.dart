@@ -187,6 +187,7 @@ class _HomepageState extends State<Homepage> {
                 Container(
                   height: 600,
                   width: 400,
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
                   child: StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance.collection('product').snapshots(),
                     builder: (context, snapshot) {

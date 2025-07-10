@@ -1,12 +1,8 @@
-
-
 import 'dart:developer';
-
 import 'package:broad/buyerPart/homePage.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../loginPage.dart';
 
 class Profilepage extends StatefulWidget {
@@ -110,11 +106,41 @@ class _ProfilepageState extends State<Profilepage> {
           body: SingleChildScrollView(
             child: Column(
               children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 20.0,right: 20,top: 10),
+                  child: Container(
+                    height: 200,
+                    width: 400,
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(20),color: Colors.blueGrey),
+                    child: Stack(
+                      children: [
+                        Center(
+                          child: CircleAvatar(
+                            radius: 70,
+                            backgroundImage: AssetImage('assets/default_image.jpg'),
 
-                Container(
-                  height: 200,
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 30,
+                          right: 140,
+                          child: GestureDetector(
+                            onTap: (){},
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape:BoxShape.circle,
+                                color: Colors.white,
+                                border:Border.all(color: Colors.grey),
+                              ),
+                              padding: EdgeInsets.all(4),
+                              child: Icon(Icons.edit,size: 20,),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-
                 Padding(
                   padding: const EdgeInsets.only(left: 20,right: 20,top: 20),
                   child: TextFormField(
