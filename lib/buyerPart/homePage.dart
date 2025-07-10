@@ -26,6 +26,7 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
 
   String? name;
+  TextEditingController searchController= TextEditingController();
 
 
   final List<String> images =[
@@ -139,6 +140,26 @@ class _HomepageState extends State<Homepage> {
           body: SingleChildScrollView(
             child: Column(
               children: [
+                //search bar
+                Padding(
+                  padding: const EdgeInsets.only(left: 20,right: 20,top: 20,bottom: 20),
+                  child: TextFormField(
+                    controller: searchController,
+                    decoration: InputDecoration(
+                      suffixIcon: Icon(Icons.search),
+                      hintText: "Search Item",
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.green),
+                        borderRadius: BorderRadius.circular(20),
+                      )
+                    ),
+
+                  ),
+                ),
                 CarouselSlider(
                   options: CarouselOptions(
                     height: 200,

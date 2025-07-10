@@ -123,7 +123,7 @@ class _CartpageState extends State<Cartpage> {
                                       },
                                       icon: Icon(Icons.remove)
                                   ),
-                                  Text(data['qty'].toString()),
+                                  Text(data['qty'].toString()??""),
                                   IconButton(
                                       onPressed: (){
                                         updateCart(docId, qty+1);
@@ -147,7 +147,7 @@ class _CartpageState extends State<Cartpage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(
-                        "Total: Rs. ${totalPrice.toStringAsFixed(2)}",
+                        "Total: Rs. ${totalPrice.toStringAsFixed(2)??""}",
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,

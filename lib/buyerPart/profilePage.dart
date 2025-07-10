@@ -13,9 +13,12 @@ class Profilepage extends StatefulWidget {
 
 class _ProfilepageState extends State<Profilepage> {
 
-
-
-
+  TextEditingController userNameController = TextEditingController();
+  TextEditingController passwordChangeController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+  bool see=false;
+  bool seePass=false;
+  bool light = true;
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +85,105 @@ class _ProfilepageState extends State<Profilepage> {
               ],
             ),
           ),
-          
+          body: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 20,right: 20,top: 20),
+                child: TextFormField(
+                  controller: userNameController,
+                  decoration: InputDecoration(
+                      suffixIcon: Icon(Icons.drive_file_rename_outline),
+                      hintText: "Change User Name",
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.green),
+                        borderRadius: BorderRadius.circular(20),
+                      )
+                  ),
+                ),
+              ),
+              SizedBox(height: 30,),
+              Padding(
+                padding: const EdgeInsets.only(left: 20,right: 20),
+                child: TextFormField(
+                  obscureText: see,
+                  controller: passwordChangeController,
+                  decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                          onPressed: (){
+                            setState(() {
+                              see=!see;
+                            });
+                          },
+                          icon: Icon(see?Icons.visibility:Icons.visibility_off)),
+                      hintText: "Change Password",
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.green),
+                        borderRadius: BorderRadius.circular(20),
+                      )
+                  ),
+                ),
+              ),
+              SizedBox(height: 30,),
+              Padding(
+                padding: const EdgeInsets.only(left: 20,right: 20),
+                child: TextFormField(
+                  obscureText: seePass,
+                  controller: confirmPasswordController,
+                  decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                          onPressed: (){
+                            setState(() {
+                              seePass=!seePass;
+                            });
+                          },
+                          icon: Icon(seePass?Icons.visibility:Icons.visibility_off)),
+                      hintText: "Confirm Password",
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.green),
+                        borderRadius: BorderRadius.circular(20),
+                      )
+                  ),
+
+                ),
+              ),
+              SizedBox(height: 30,),
+              Padding(
+                padding: const EdgeInsets.only(left: 30,right: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Text("Enable Biometric ",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
+                        Icon(Icons.fingerprint),
+                      ],
+                    ),
+                    Switch(
+                        value: light,
+                        activeColor: Colors.greenAccent,
+                        onChanged: (bool value){
+                          setState(() {
+                            light=value;
+                          });
+                        }
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
         ));
   }
 }
