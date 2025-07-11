@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:broad/buyerPart/cartPage.dart';
 import 'package:broad/buyerPart/productDetail.dart';
 import 'package:broad/buyerPart/profilePage.dart';
@@ -10,10 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-
 import '../loginPage.dart';
-
-
 
 
 class Homepage extends StatefulWidget {
@@ -271,5 +267,3 @@ class _HomepageState extends State<Homepage> {
         ));
   }
 }
-
-
