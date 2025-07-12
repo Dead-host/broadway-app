@@ -20,7 +20,7 @@ class _ProfilepageState extends State<Profilepage> {
   bool see=false;
   bool seePass=false;
   bool? light;
-  bool isFingerPrintEnable=true;
+  bool? isFingerPrintEnable;
 
 
   void getData()async{
@@ -238,12 +238,6 @@ class _ProfilepageState extends State<Profilepage> {
                               light=value;
                             });
 
-                            if(value==true){
-
-                            }
-                            else{
-
-                            }
                           }
                       ),
                     ],

@@ -1,5 +1,6 @@
 import 'package:broad/sellerPart/sellerHomePage.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../loginPage.dart';
 
@@ -17,9 +18,30 @@ class _SellerprofilepageState extends State<Sellerprofilepage> {
   TextEditingController confirmPasswordController = TextEditingController();
   bool see=false;
   bool seePass=false;
-  bool light = true;
+  bool? light;
+  bool? isFingerPrintEnable;
+
+
+
+  void getData()async{
+    SharedPreferences _pref = await SharedPreferences.getInstance();
+    setState(() {
+      light=_pref.getBool('isFingerEnable')??false;
+    });
+
+  }
+
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData();
+  }
+
+  @override
+
+
   Widget build(BuildContext context) {
     return SafeArea(child: Scaffold(
       appBar: AppBar(
@@ -86,6 +108,41 @@ class _SellerprofilepageState extends State<Sellerprofilepage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0,right: 20,top: 10),
+              child: Container(
+                height:200,
+                width:400,
+                decoration: BoxDecoration(color: Colors.blueGrey,borderRadius: BorderRadius.circular(20)),
+                child: Stack(
+                  children: [
+                    Center(
+                      child: CircleAvatar(
+                        radius: 70,
+                        backgroundImage: AssetImage('assets/default_image.jpg'),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 30,
+                      right: 130,
+                      child: GestureDetector(
+                        onTap:(){} ,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                            border: Border.all(color: Colors.grey),
+                          ),
+                          padding: EdgeInsets.all(4),
+                          child: Icon(Icons.edit),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.only(left: 20,right: 20,top: 20),
               child: TextFormField(
@@ -170,9 +227,14 @@ class _SellerprofilepageState extends State<Sellerprofilepage> {
                     ],
                   ),
                   Switch(
-                      value: light,
+                      value: light!,
                       activeColor: Colors.greenAccent,
-                      onChanged: (bool value){
+                      onChanged: (bool value)async{
+
+                        SharedPreferences pref = await SharedPreferences.getInstance();
+
+                        pref.setBool('isFingerEnable', value);
+
                         setState(() {
                           light=value;
                         });
