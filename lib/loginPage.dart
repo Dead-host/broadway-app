@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_toggle_tab/flutter_toggle_tab.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -296,177 +297,183 @@ class _LoginpageState extends State<Loginpage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child:  Scaffold(
-        body: isLoading?SpinKitSpinningLines(color: Colors.purple,size: 100,):
+        body:isLoading?SpinKitSpinningLines(color: Colors.purple,size: 100,):
         SingleChildScrollView(
           child:Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 50),
-                  child: Center(
-                    child: Text(
-                        "Welcome",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 30,
-                      ),
-                    ),
-                  ),
-                ),
-                Center(
+
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 50.0),
+                child: Icon(Icons.computer_rounded,size: 150,),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 50),
+                child: Center(
                   child: Text(
-                      "to the login page",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold
+                    "Hello Again",
+                    style: GoogleFonts.bebasNeue(
+                      fontSize: 52,
                     ),
                   ),
                 ),
-                SizedBox(height: 50,),
-                FlutterToggleTab(
-                    width: 90,
-                    borderRadius: 50,
-                    height: 50,
-                    selectedIndex: _tabTextIndexSelected,
-                    selectedBackgroundColors: [const Color(0xffBF1E2E)],
-                    selectedTextStyle: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
-                    unSelectedTextStyle: const TextStyle(color: Colors.black87, fontSize: 14),
-                    unSelectedBackgroundColors: [Colors.white],
-                    dataTabs: _listTextTabToggle,
-                    selectedLabelIndex: (index)=> setState(() {
-                      _tabTextIndexSelected=index;
-                    }),
-                    isScroll: false,
-                    ),
-                SizedBox(height: 50,),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20.0,right: 20),
-                  child: TextFormField(
-                    controller: emailController,
-                    decoration: InputDecoration(
+              ),
+              Center(
+                child: Text(
+                  "Welcome back, you have been missed",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold
+                  ),
+                ),
+              ),
+              SizedBox(height: 20,),
+              FlutterToggleTab(
+                width: 90,
+                borderRadius: 50,
+                height: 50,
+                selectedIndex: _tabTextIndexSelected,
+                selectedBackgroundColors: [const Color(0xffBF1E2E)],
+                selectedTextStyle: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+                unSelectedTextStyle: const TextStyle(color: Colors.black87, fontSize: 14),
+                unSelectedBackgroundColors: [Colors.white],
+                dataTabs: _listTextTabToggle,
+                selectedLabelIndex: (index)=> setState(() {
+                  _tabTextIndexSelected=index;
+                }),
+                isScroll: false,
+              ),
+              SizedBox(height: 20,),
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0,right: 20),
+                child: TextFormField(
+                  controller: emailController,
+                  decoration: InputDecoration(
                       hintText: "Email",
                       suffixIcon: Icon(Icons.email_outlined),
                       enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(
-                          color: Colors.purple
-                        )
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(
+                              color: Colors.purple
+                          )
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(
-                          color: Colors.grey
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(
+                              color: Colors.grey
+                          )
                       )
-                      )
-                    ),
                   ),
                 ),
-                SizedBox(height: 50,),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20.0,right: 20),
-                  child: TextFormField(
-                    obscureText: see,
-                    controller: passwordController,
-                    decoration: InputDecoration(
-                        hintText: "password",
-                        suffixIcon: IconButton(
-                            onPressed: (){
-                              setState(() {
-                                see=!see;
-                              });
-                            },
-                            icon: Icon(see?Icons.visibility:Icons.visibility_off)),
-                        enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(
-                                color: Colors.purple
-                            )
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(
-                                color: Colors.grey
-                            )
-                        )
-                    ),
+              ),
+              SizedBox(height: 20,),
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0,right: 20),
+                child: TextFormField(
+                  obscureText: see,
+                  controller: passwordController,
+                  decoration: InputDecoration(
+                      hintText: "password",
+                      suffixIcon: IconButton(
+                          onPressed: (){
+                            setState(() {
+                              see=!see;
+                            });
+                          },
+                          icon: Icon(see?Icons.visibility:Icons.visibility_off)),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(
+                              color: Colors.purple
+                          )
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(
+                              color: Colors.grey
+                          )
+                      )
                   ),
                 ),
-                SizedBox(height: 50,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                        onPressed: ()async{
-                          loginUser();
-                          //SharedPreferences prefs = await SharedPreferences.getInstance();
-                          //loginStat();
-                          //getDataInfo();
-                          //Navigator.push(context, MaterialPageRoute(builder: (context)=>Homepage()));
-                        },
-                        child: Text("Login")),
-                    Visibility(
-                      visible: isFingerPrintEnable!,
-                        child: IconButton(
-                            onPressed: (){_authenticateWithBiometrics();},
-                            icon: Icon(Icons.fingerprint)
-                        ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 50,),
-                Center(
-                    child: OutlinedButton.icon(
-                      onPressed: () async {
-
-                        UserCredential? userCredential = await signInWithGoogle();
-
-
-                        if (userCredential != null) {
-
-                          if (_tabTextIndexSelected == 1) {
-
-                          } else {
-
-                          }
-                        } else {
-                          Fluttertoast.showToast(
-                            msg: "Google Sign-In failed. Please try again.",
-                            toastLength: Toast.LENGTH_SHORT,
-                            backgroundColor: Colors.red,
-                            textColor: Colors.white,
-                          );
-                        }
+              ),
+              SizedBox(height: 20,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                      onPressed: ()async{
+                        loginUser();
+                        //SharedPreferences prefs = await SharedPreferences.getInstance();
+                        //loginStat();
+                        //getDataInfo();
+                        //Navigator.push(context, MaterialPageRoute(builder: (context)=>Homepage()));
                       },
+                      child: Text("Login")),
+                  Visibility(
+                    visible: isFingerPrintEnable!,
+                    child: IconButton(
+                        onPressed: (){_authenticateWithBiometrics();},
+                        icon: Icon(Icons.fingerprint)
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20,),
+              Center(
+                child: OutlinedButton.icon(
+                  onPressed: () async {
 
-                      icon: Image.asset('assets/google_icon.png', height: 24),
-                      label: const Text("Sign in with Google"),
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Colors.grey),
-                        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                    UserCredential? userCredential = await signInWithGoogle();
+
+
+                    if (userCredential != null) {
+
+                      if (_tabTextIndexSelected == 1) {
+
+                      } else {
+
+                      }
+                    } else {
+                      Fluttertoast.showToast(
+                        msg: "Google Sign-In failed. Please try again.",
+                        toastLength: Toast.LENGTH_SHORT,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                      );
+                    }
+                  },
+
+                  icon: Image.asset('assets/google_icon.png', height: 24),
+                  label: const Text("Sign in with Google"),
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Colors.grey),
+                    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20,),
+              Row (
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Dont have an account?"),
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>Signuppage()));
+                    },
+                    child: Text(
+                      "Register",
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    ),
-                SizedBox(height: 50,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Dont have an account?"),
-                    GestureDetector(
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>Signuppage()));
-                      },
-                        child: Text(
-                            "Register",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                    ),
-                  ],
-                )
-              ],
-            ),
+                  ),
+                ],
+              )
+            ],
+          ),
 
         ),
+
       ),
     );
   }
