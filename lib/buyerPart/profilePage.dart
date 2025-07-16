@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:broad/buyerPart/changePassword.dart';
 import 'package:broad/buyerPart/homePage.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -20,20 +21,16 @@ class Profilepage extends StatefulWidget {
 class _ProfilepageState extends State<Profilepage> {
 
   TextEditingController userNameController = TextEditingController();
-  TextEditingController passwordChangeController = TextEditingController();
-  TextEditingController confirmPasswordController = TextEditingController();
-  String? oldPass;
-  bool see=false;
-  bool seePass=false;
+  TextEditingController addressController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+
   bool? light;
   bool? isFingerPrintEnable;
   Gender? selectedGender;
   String? email;
 
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
 
   void getData()async{
     final user = _auth.currentUser;
@@ -43,19 +40,18 @@ class _ProfilepageState extends State<Profilepage> {
       email=user!.email;
     });
   }
-
-  void updateData()async{
+  void updateUserInfo()async{
     final user = _auth.currentUser;
     final userRef = _firestore.collection('users').doc(user!.uid);
 
     await userRef.update(
-      {
-        'name':userNameController.text,
-        'password':passwordChangeController.text,
-        'gender':selectedGender!.name,
-      }
-    );
+        {
+          'name':userNameController.text,
+          'address':addressController.text,
+          'phone':phoneController.text,
+        });
   }
+
 
   @override
   void initState() {
@@ -209,17 +205,10 @@ class _ProfilepageState extends State<Profilepage> {
                 Padding(
                   padding: const EdgeInsets.only(left: 20,right: 20),
                   child: TextFormField(
-                    obscureText: see,
-                    controller: passwordChangeController,
+                    controller: addressController,
                     decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                            onPressed: (){
-                              setState(() {
-                                see=!see;
-                              });
-                            },
-                            icon: Icon(see?Icons.visibility:Icons.visibility_off)),
-                        hintText: "Change Password",
+                        suffixIcon: Icon(Icons.home_outlined),
+                        hintText: "Change Address",
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20),
                           borderSide: BorderSide(color: Colors.grey),
@@ -235,17 +224,11 @@ class _ProfilepageState extends State<Profilepage> {
                 Padding(
                   padding: const EdgeInsets.only(left: 20,right: 20),
                   child: TextFormField(
-                    obscureText: seePass,
-                    controller: confirmPasswordController,
+                    keyboardType: TextInputType.number,
+                    controller: phoneController,
                     decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                            onPressed: (){
-                              setState(() {
-                                seePass=!seePass;
-                              });
-                            },
-                            icon: Icon(seePass?Icons.visibility:Icons.visibility_off)),
-                        hintText: "Confirm Password",
+                        suffixIcon: Icon(Icons.phone),
+                        hintText: "Change Phone number",
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20),
                           borderSide: BorderSide(color: Colors.grey),
@@ -255,7 +238,6 @@ class _ProfilepageState extends State<Profilepage> {
                           borderRadius: BorderRadius.circular(20),
                         )
                     ),
-
                   ),
                 ),
                 SizedBox(height: 30,),
@@ -322,24 +304,45 @@ class _ProfilepageState extends State<Profilepage> {
                   ),
                 ),
                 SizedBox(height: 30,),
-                ElevatedButton(onPressed: (){
-                  if(passwordChangeController.text==confirmPasswordController.text){
-                    updateData();
-                    passwordChangeController.clear();
-                    confirmPasswordController.clear();
-                    userNameController.clear();
+                Padding(
+                  padding: const EdgeInsets.only(left: 30,right: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Change Password ",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
+                      IconButton(
+                        onPressed: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>Changepassword()));
+                        },
+                        icon:Icon(Icons.password,size: 30,color: Colors.deepPurple,)
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 30,),
+                ElevatedButton(
+                    onPressed: (){
+                  if(userNameController.text!=null){
+                    updateUserInfo();
+                    Fluttertoast.showToast(
+                      msg: "Updated",
+                      toastLength: Toast.LENGTH_SHORT,
+                      backgroundColor: Colors.green,
+                      textColor: Colors.white,
+                    );
                   }
                   else{
                     Fluttertoast.showToast(
-                        msg: "Password not match",
+                      msg: "Name cannot be empty",
+                      toastLength: Toast.LENGTH_SHORT,
                       backgroundColor: Colors.red,
                       textColor: Colors.white,
                     );
                   }
-                },
-                    child: Text("Update changes")),
-                SizedBox(height: 30,),
 
+                },
+                    child: Text("Update Profile")),
+                SizedBox(height: 30,),
               ],
             ),
           ),

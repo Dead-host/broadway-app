@@ -124,6 +124,7 @@ class _SignuppageState extends State<Signuppage> {
                 Padding(
                   padding: const EdgeInsets.only(left: 20,right: 20),
                   child: TextFormField(
+                    keyboardType: TextInputType.number,
                       controller: phoneController,
                       decoration: InputDecoration(
                           hintText: "Phone number",
