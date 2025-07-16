@@ -98,43 +98,46 @@ class _CartpageState extends State<Cartpage> {
             return Column(
               children: [
                 Expanded(
-                    child: ListView.builder(
-                      itemCount: items.length,
-                        itemBuilder: (context,index){
-                          final data = items[index].data() as Map<String,dynamic>;
-                          final qty = data['qty'];
-                          final docId = items[index].id;
-                          return Card(
-                            child: ListTile(
-                              leading: Image.memory(base64Decode(data['image']),height: 50,width: 60,),
-                              title: Text(data['name']??""),
-                              subtitle: Text("Price: Rs ${data['price']??""}"),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  IconButton(
-                                      onPressed: (){
-                                        if(qty>1){
-                                          updateCart(docId, qty-1);
-                                        }
-                                        else{
-                                          FirebaseFirestore.instance.collection('users').doc(uid).collection('cart').doc(docId).delete();
-                                        }
-                                      },
-                                      icon: Icon(Icons.remove)
-                                  ),
-                                  Text(data['qty'].toString()??""),
-                                  IconButton(
-                                      onPressed: (){
-                                        updateCart(docId, qty+1);
-                                      },
-                                      icon: Icon(Icons.add)
-                                  ),
-                                ],
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 10,right: 10),
+                      child: ListView.builder(
+                        itemCount: items.length,
+                          itemBuilder: (context,index){
+                            final data = items[index].data() as Map<String,dynamic>;
+                            final qty = data['qty'];
+                            final docId = items[index].id;
+                            return Card(
+                              child: ListTile(
+                                leading: Image.memory(base64Decode(data['image']??""),height: 50,width: 60,),
+                                title: Text(data['name']??""),
+                                subtitle: Text("Price: Rs ${data['price']??""}"),
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                        onPressed: (){
+                                          if(qty>1){
+                                            updateCart(docId, qty-1);
+                                          }
+                                          else{
+                                            FirebaseFirestore.instance.collection('users').doc(uid).collection('cart').doc(docId).delete();
+                                          }
+                                        },
+                                        icon: Icon(Icons.remove)
+                                    ),
+                                    Text(data['qty'].toString()??''),
+                                    IconButton(
+                                        onPressed: (){
+                                          updateCart(docId, qty+1);
+                                        },
+                                        icon: Icon(Icons.add)
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        },
+                            );
+                          },
+                      ),
                     )
                 ),
                 Container(

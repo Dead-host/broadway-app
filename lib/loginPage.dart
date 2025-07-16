@@ -331,7 +331,7 @@ class _LoginpageState extends State<Loginpage> {
                 borderRadius: 50,
                 height: 50,
                 selectedIndex: _tabTextIndexSelected,
-                selectedBackgroundColors: [const Color(0xffBF1E2E)],
+                selectedBackgroundColors: [Colors.deepPurple],
                 selectedTextStyle: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
                 unSelectedTextStyle: const TextStyle(color: Colors.black87, fontSize: 14),
                 unSelectedBackgroundColors: [Colors.white],

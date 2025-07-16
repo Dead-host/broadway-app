@@ -181,9 +181,8 @@ class _HomepageState extends State<Homepage> {
                 ),
                 SizedBox(height: 10,),
                 Container(
-                  height: 600,
-                  width: 400,
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+                  height:  MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
                   child: StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance.collection('product').snapshots(),
                     builder: (context, snapshot) {
@@ -198,6 +197,7 @@ class _HomepageState extends State<Homepage> {
                       final docs = snapshot.data!.docs;
 
                       return GridView.builder(
+                        physics: NeverScrollableScrollPhysics(),
                         padding: const EdgeInsets.all(10),
                         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,

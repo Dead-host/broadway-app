@@ -410,7 +410,6 @@ class _CheckoutpageState extends State<Checkoutpage> {
             }, child: Text("Get curent location")),
             SizedBox(height: 50,),
            // Text(widget.price.toString()), Edit this make it beautiful as per the requirement
-
             Padding(
               padding: const EdgeInsets.only(left: 20.0,right: 20),
               child: DropdownButtonFormField<PaymentMethod>(

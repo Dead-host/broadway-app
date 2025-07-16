@@ -1,9 +1,14 @@
 import 'dart:developer';
 import 'package:broad/buyerPart/homePage.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../loginPage.dart';
+
+enum Gender{male,female,others}
 
 class Profilepage extends StatefulWidget {
   const Profilepage({super.key});
@@ -17,17 +22,39 @@ class _ProfilepageState extends State<Profilepage> {
   TextEditingController userNameController = TextEditingController();
   TextEditingController passwordChangeController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
+  String? oldPass;
   bool see=false;
   bool seePass=false;
   bool? light;
   bool? isFingerPrintEnable;
+  Gender? selectedGender;
+  String? email;
+
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
 
   void getData()async{
+    final user = _auth.currentUser;
     SharedPreferences _pref = await SharedPreferences.getInstance();
     setState(() {
       light=_pref.getBool('isFingerEnable')??false;
+      email=user!.email;
     });
+  }
+
+  void updateData()async{
+    final user = _auth.currentUser;
+    final userRef = _firestore.collection('users').doc(user!.uid);
+
+    await userRef.update(
+      {
+        'name':userNameController.text,
+        'password':passwordChangeController.text,
+        'gender':selectedGender!.name,
+      }
+    );
   }
 
   @override
@@ -144,6 +171,25 @@ class _ProfilepageState extends State<Profilepage> {
                 Padding(
                   padding: const EdgeInsets.only(left: 20,right: 20,top: 20),
                   child: TextFormField(
+                    readOnly: true,
+                    decoration: InputDecoration(
+                        hintText: email,
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        borderSide: BorderSide(color: Colors.green),
+                      )
+
+                    ),
+                  ),
+                ),
+                SizedBox(height: 30,),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20,right: 20),
+                  child: TextFormField(
                     controller: userNameController,
                     decoration: InputDecoration(
                         suffixIcon: Icon(Icons.drive_file_rename_outline),
@@ -214,6 +260,38 @@ class _ProfilepageState extends State<Profilepage> {
                 ),
                 SizedBox(height: 30,),
                 Padding(
+                  padding: const EdgeInsets.only(left: 20,right: 20),
+                  child: DropdownButtonFormField<Gender>(
+                    value: selectedGender,
+                      items: Gender.values.map((method){
+                        return DropdownMenuItem(
+                          value: method,
+                            child: Text(method.name.toUpperCase()),
+                        );
+                      }).toList(),
+                      onChanged: (method){
+                        setState(() {
+                          selectedGender=method;
+                        });
+                      },
+                    decoration: InputDecoration(
+                      labelText: "Select Gender",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.green),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 30,),
+                Padding(
                   padding: const EdgeInsets.only(left: 30,right: 20),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -242,7 +320,26 @@ class _ProfilepageState extends State<Profilepage> {
                       ),
                     ],
                   ),
-                )
+                ),
+                SizedBox(height: 30,),
+                ElevatedButton(onPressed: (){
+                  if(passwordChangeController.text==confirmPasswordController.text){
+                    updateData();
+                    passwordChangeController.clear();
+                    confirmPasswordController.clear();
+                    userNameController.clear();
+                  }
+                  else{
+                    Fluttertoast.showToast(
+                        msg: "Password not match",
+                      backgroundColor: Colors.red,
+                      textColor: Colors.white,
+                    );
+                  }
+                },
+                    child: Text("Update changes")),
+                SizedBox(height: 30,),
+
               ],
             ),
           ),
